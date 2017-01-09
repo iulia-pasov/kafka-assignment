@@ -31,7 +31,7 @@ that includes all of the example programs and dependencies.
 There are 2 available producers for this assignment. They all require the same
 arguments:
 * a path to a configuration file for the Producer properties, default in
-/.../
+src/main/resources/
 * a topic name where the data is sent
 * a path to the JSON file that will be produced
 
