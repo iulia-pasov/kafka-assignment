@@ -23,7 +23,7 @@ $ mvn package
 ...
 ```
 
-The project is set up to produces an executable, `target/kafka-example`,
+The project is set up to produces an executable, `target/kafka-assignment`,
 that includes all of the example programs and dependencies.
 
 ### Running the producers
@@ -35,13 +35,20 @@ src/main/resources/
 * a topic name where the data is sent
 * a path to the JSON file that will be produced
 
-The first producer, `whole`, sends the whole content of the JSON file to
+The first producer, `whole-producer`, sends the whole content of the JSON file to
 the given topic.
-The second producer, `message`, reads the data from the JSON in a List of
+The second producer, `message-producer`, reads the data from the JSON in a List of
 messages and sends each message to the given topic.
 
 ```
-$ target/kafka-assignment whole producer.props TopicName /path/to/json
-$ target/kafka-assignment message producer.props TopicName /path/to/json
+$ target/kafka-assignment whole-producer producer.props TopicName /path/to/json
+$ target/kafka-assignment message-producer producer.props TopicName /path/to/json
 ```
 ### Running the consumer
+
+There is only one Java consumer for the kafka-assignment project. It reads JSON
+messages and hashes the username. I needs 3 arguments:
+* a path to a configuration file for the Stream properties, default in
+src/main/resources
+* an input topic name from which JSON messages are read
+* an output topic name where the hashed-user messages are written
