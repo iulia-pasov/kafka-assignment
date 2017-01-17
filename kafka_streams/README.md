@@ -1,21 +1,4 @@
-# Kafka Assignment
-
-## The Task
-Given a JSON file containing an array of objects
-{username: <user>, message: <msg>}. As an example:
-```
-[{"username": "Joana", "message": "Die immer lacht"},
-{"username": "Holz", "message": "meine Bank, mein Tisch, meine Treppe, .."}]
-```
-The task is to ingest it into Kafka in a topic and on the consumer side to read
-messages from Kafka, mask the username, and then write back to another Kafka
-topic.
-
-This README will take you through the steps for running the Producers and
-Consumers.
-
-## Pre-requisites
-To start, you need to get Kafka up and running and create some topics.
+# Kafka Streams Project
 
 ### Compile and package up the example programs
 ```
@@ -44,11 +27,19 @@ messages and sends each message to the given topic.
 $ target/kafka-assignment whole-producer producer.props TopicName /path/to/json
 $ target/kafka-assignment message-producer producer.props TopicName /path/to/json
 ```
-### Running the consumer
+### Running the stream
 
-There is only one Java consumer for the kafka-assignment project. It reads JSON
-messages and hashes the username. I needs 3 arguments:
+There is only one Java consumer option for the kafka-assignment project,
+implemented with kafka streams. It reads JSON messages from an input topic,
+hashes the username and writes to another topic. I needs 3 arguments:
 * a path to a configuration file for the Stream properties, default in
 src/main/resources
 * an input topic name from which JSON messages are read
 * an output topic name where the hashed-user messages are written
+
+The option can also be used with the executable, but with the option
+`message-stream`, as in the example:
+
+```
+target/kafka-assignment message-stream stream.props inputTopic outputTopic
+```
