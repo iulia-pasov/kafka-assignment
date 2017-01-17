@@ -22,21 +22,28 @@ import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import com.github.benfradet.spark.kafka010.writer._
 
+/**
+ * Reads JSON messages from inputTopic and writes [[Message]]s to the
+ * outputTopic
+ */
 object MessageStreaming {
    def main(args: Array[String]) {
       if (args.length < 3) {
-         System.err.println("Please insert input and output topics")
+         System.err.println("""
+            Please insert bootstrap servers, input and output topics
+            """)
          System.exit(1)
       }
 
-      val (zkQuorum, inputTopic, outputTopic) = (args(0), args(1), args(2))
+      val (connection, inputTopic, outputTopic) = (args(0), args(1), args(2))
 
       val sparkConf = new SparkConf().setAppName("Message Stream Demo")
       val streamingContext = new StreamingContext(sparkConf, Seconds(3))
       streamingContext.checkpoint("checkpoint")
 
+      // Set properties for consumer and producer
       val kafkaParams = Map[String, Object](
-         "bootstrap.servers" -> "localhost:9092",
+         "bootstrap.servers" -> connection,
          "key.deserializer" -> classOf[StringDeserializer],
          "value.deserializer" -> classOf[StringDeserializer],
          "group.id" -> "x",
@@ -45,15 +52,14 @@ object MessageStreaming {
 
       val producerProps = {
          val p = new Properties()
-         p.setProperty("bootstrap.servers", "localhost:9092")
-         p.setProperty("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")//classOf[StringSerializer].getName)
-         p.setProperty("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer") //classOf[ByteArraySerializer].getName)
+         p.setProperty("bootstrap.servers", connection)
+         p.setProperty("key.serializer", classOf[StringSerializer].getName)
+         p.setProperty("value.serializer", classOf[ByteArraySerializer].getName)
          p
       }
 
       val kafkaTopics = Array(inputTopic)
 
-      import _root_.kafka.serializer.StringDecoder
       val directStream = KafkaUtils.createDirectStream[String, String](
          streamingContext,
          PreferConsistent,

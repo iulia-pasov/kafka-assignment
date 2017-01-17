@@ -13,4 +13,3 @@ assemblyMergeStrategy in assembly := {
   case _ => MergeStrategy.first
 }
 
-org.scalastyle.sbt.ScalastylePlugin.scalastyleConfig := file("project/scalastyle-config.xml")
